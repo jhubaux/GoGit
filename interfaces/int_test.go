@@ -6,14 +6,15 @@ import (
 )
 
 // Check that we have English and Francais available
-func TestGreeter(t *testing.T) {
-	greeters := []Greeter{English{}, Francais{}}
+func TestNewGreeter(t *testing.T) {
+	languages := []string{"English", "Francais"}
 
-	for _, g := range greeters {
-		if g == nil {
+	for _, lang := range languages {
+		l := NewGreeter(lang)
+		if l == nil {
 			t.Error("Language:", lang, "not implemented!")
 		} else {
-			if g.Language() != lang {
+			if l.Language() != lang {
 				t.Error("Language:", lang, "not correctly returned")
 			}
 		}
