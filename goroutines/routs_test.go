@@ -10,8 +10,8 @@ import (
 // Test if the fibonacci function is correct
 func TestFibonacciSingle(t *testing.T) {
 	val := Fibonacci(4)
-	if val != 24 {
-		t.Error(fmt.Sprintf("Fib(4) = 24 but had %d", val))
+	if val != 3 {
+		t.Error(fmt.Sprintf("Fib(4) = 3 but had %d", val))
 	}
 }
 
@@ -20,8 +20,8 @@ func TestFibonacciSingle(t *testing.T) {
 // the fibonacci out of them
 func TestWaitGroupFibonacci(t *testing.T) {
 	//  Numbers to compute
-	numbers := []int{4, 8, 16, 32, 56}
-	fibs := make([]int, len(numbers))
+	numbers := []int{4, 8, 16, 32, 20}
+	var fibs []int
 	// the WaitGroup is kinda like semaphore
 	var wg sync.WaitGroup
 	// you add the numbers of jobs you want to wait
@@ -35,7 +35,7 @@ func TestWaitGroupFibonacci(t *testing.T) {
 		// you call wg.Done() on it. If len(numbers) routines calls wg.Done()
 		// the execution flow will return
 		// WARNING : it should not block !!
-		ComputeFibonacci(numbers, fibs, &wg)
+		fibs = ComputeFibonacci(numbers, &wg)
 		wg.Wait()
 		done <- true
 	}()

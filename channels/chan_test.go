@@ -21,6 +21,7 @@ func TestFibonacciChannels(t *testing.T) {
 	go func() {
 		wait := make(chan bool)
 		go func() {
+
 			ComputeFibonacci(numbers, ch)
 			wait <- true
 		}()
