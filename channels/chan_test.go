@@ -10,7 +10,7 @@ import (
 func TestFibonacciChannels(t *testing.T) {
 	ch := make(chan int)
 
-	numbers := []int{4, 8, 16, 32, 56}
+	numbers := []int{4, 8, 16, 32}
 	// compute solutions
 	solution := make(map[int]int)
 	for _, n := range numbers {
@@ -52,20 +52,19 @@ func TestFibonacciChannels(t *testing.T) {
 
 // Fan out method : one master channel -> dispatching the value to many children
 // channels.
-// Implement a method taking one channel as argument where I will input some
-// numbers. THe method should be returning 3 channels :
+// Implement a method taking numbers in argument
+// THe method should be returning 3 channels :
 // first one returns n*n
 // second one returns n*n*n
 // third one returns n*n*n*n
 // HENCE IT SHOULD NOT BLOCK !
 // There are many ways to do this but this exercise illustrate what is the fan
 // out pattern in Go. Your function should launch 3 goroutines each listening on
-// their own channel. Your function should listen on the "master" channel and
+// their own channel. Your function should listen dispatch the numbers to the
+// right channels and
 // dispatch the value to the respective 3 children channels each time a new
 // value is given.
 func TestFanOut(t *testing.T) {
-	master := make(chan int)
-
 	numbers := []int{4, 8, 16, 32, 56}
 	solution2 := make(map[int]int)
 	solution3 := make(map[int]int)
@@ -77,10 +76,10 @@ func TestFanOut(t *testing.T) {
 	}
 
 	// gooo
-	ch2, ch3, ch4 := FanOut(master)
+	ch2, ch3, ch4 := FanOut(numbers)
 
 	n := 0
-	for n < len(numbers) {
+	for n < len(numbers)*3 {
 		select {
 		case inc := <-ch2:
 			if _, ok := solution2[inc]; !ok {
