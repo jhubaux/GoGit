@@ -94,6 +94,7 @@ func TestFanOut(t *testing.T) {
 		}
 		wg.Done()
 	}
+	wg.Add(3)
 	go fn(ch2, solution2)
 	go fn(ch3, solution3)
 	go fn(ch4, solution4)
