@@ -2,6 +2,7 @@ package channels
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 	"time"
 )
@@ -64,6 +65,10 @@ func TestFibonacciChannels(t *testing.T) {
 // right channels and
 // dispatch the value to the respective 3 children channels each time a new
 // value is given.
+
+// For more in-depth review of channels / pipelines :
+// https://blog.golang.org/pipelines
+
 func TestFanOut(t *testing.T) {
 	numbers := []int{4, 8, 16, 32, 56}
 	solution2 := make(map[int]int)
@@ -78,28 +83,33 @@ func TestFanOut(t *testing.T) {
 	// gooo
 	ch2, ch3, ch4 := FanOut(numbers)
 
-	n := 0
-	for n < len(numbers)*3 {
-		select {
-		case inc := <-ch2:
-			if _, ok := solution2[inc]; !ok {
-				t.Error(fmt.Sprintf("Received %d but that corresponds to nothing guy (n*n)", inc))
-			}
-		case inc := <-ch3:
-			if _, ok := solution3[inc]; !ok {
-				t.Error(fmt.Sprintf("Received %d but that corresponds to nothing guy (n*n*n)", inc))
-			}
-		case inc := <-ch4:
-			if _, ok := solution4[inc]; !ok {
-				t.Error(fmt.Sprintf("Received %d but that corresponds to nothing guy (n*n*n*n)", inc))
-			}
-		case <-time.After(time.Second * 2):
-			{
-				t.Error("Too long !")
-				break
+	// waitgroup to wait every numbers to be generated and verified
+	var wg sync.WaitGroup
+	// verification function
+	fn := func(ch chan int, sol map[int]int) {
+		for n := range ch {
+			if _, ok := sol[n]; !ok {
+				t.Error(fmt.Sprintf("Received %d but that corresponds to nothing guy ", n))
 			}
 		}
-		n += 1
+		wg.Done()
+	}
+	go fn(ch2, solution2)
+	go fn(ch3, solution3)
+	go fn(ch4, solution4)
+
+	// chan to use a timeout on the verification
+	done := make(chan bool)
+	// Wait the end  of the verification
+	go func() {
+		wg.Wait()
+		// then signals the end
+		done <- true
+	}()
+	select {
+	case <-done:
+	case <-time.After(time.Second * 2):
+		t.Error("Too long !")
 	}
 
 }
