@@ -1,5 +1,10 @@
 package channels
 
+// I'll let you figure this out ..;)
+func Fibonacci(n int) int {
+
+}
+
 // Compute the fibonaccni number for each numbers and put the result into the
 // chan. THis SHOULD NOT be a blocking function,i.e. it must return BEFORE the
 // results are done
