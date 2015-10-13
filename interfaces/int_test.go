@@ -1,20 +1,19 @@
 package main
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 // Check that we have English and Francais available
 func TestGreeter(t *testing.T) {
-	languages := []string{"English", "Francais"}
+	greeters := []Greeter{English{}, Francais{}}
 
-	for _, lang := range languages {
-		l := NewGreeter(lang)
-		if l == nil {
+	for _, g := range greeters {
+		if g == nil {
 			t.Error("Language:", lang, "not implemented!")
 		} else {
-			if l.Language() != lang {
+			if g.Language() != lang {
 				t.Error("Language:", lang, "not correctly returned")
 			}
 		}
