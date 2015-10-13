@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"bufio"
 	"os"
+	"strings"
 )
 
 const (
@@ -40,7 +41,16 @@ func main() {
 // * p - PAPER
 // Return -1 for non-valid string
 func Convert(s string) int{
-	return -1
+	ss := strings.ToLower(s)
+	switch ss{
+	case "r":
+		return ROCK
+	case "s":
+		return SCISSORS
+	case "p":
+		return PAPER
+		}
+		return 0
 }
 
 // Takes two turns and returns
